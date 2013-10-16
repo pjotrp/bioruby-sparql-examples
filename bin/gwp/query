@@ -6,6 +6,8 @@
 # Author:: Pjotr Prins
 # Copyright:: 2013
 
+require 'sparql/client'
+
 USAGE =<<DESCRIPTION
 
 Run queries on a GWP database. Queries are
@@ -27,8 +29,6 @@ if ARGV.size == 0
   print USAGE
 end
 
-command = ARGV.shift
-
 require 'bio-sparql-examples'
 require 'optparse'
 
@@ -40,6 +40,7 @@ require 'optparse'
 # Bio::Log::CLI.trace('info')
 
 options = {:example_switch=>false,:show_help=>false}
+
 opts = OptionParser.new do |o|
   o.banner = "Usage: #{File.basename($0)} [options] filename\ne.g. #{File.basename($0)}"
 
@@ -48,20 +49,22 @@ opts = OptionParser.new do |o|
   end
 end
 
-p options
-
-if options[:show_help]
-  print USAGE
-  exit 1
-end
-
 
 begin
   opts.parse!(ARGV)
 
+  command = ARGV.shift
+
+
+  if options[:show_help]
+    print USAGE
+    exit 1
+  end
+
   case command
     when 'overlap'
-      print "HERE"
+      require 'bio-sparql-examples/gwp/overlap'
+      BioSparql::GWP::Overlap::query_clusters()
   end
 
 
