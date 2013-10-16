@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+#
+# Queries for GWP
+#
+# BioRuby bio-sparql-examples Plugin BioSparqlExamples
+# Author:: Pjotr Prins
+# Copyright:: 2013
+
+USAGE =<<DESCRIPTION
+
+Run queries on a GWP database. Queries are
+
+  overlap  : Find overlapping clusters
+
+DESCRIPTION
+
+gempath = File.dirname(File.dirname(File.dirname(__FILE__)))
+$: << File.join(gempath,'lib')
+
+VERSION_FILENAME=File.join(gempath,'VERSION')
+version = File.new(VERSION_FILENAME).read.chomp
+
+# print banner
+print "bio-sparql-examples #{version} (biogem Ruby #{RUBY_VERSION}) by Pjotr Prins 2013\n"
+
+if ARGV.size == 0
+  print USAGE
+end
+
+command = ARGV.shift
+
+require 'bio-sparql-examples'
+require 'optparse'
+
+# Uncomment when using the bio-logger 
+# require 'bio-logger'
+# log = Bio::Log::LoggerPlus.new 'bio-sparql-examples'
+# log.outputters = Bio::Log::Outputter.stderr 
+# Bio::Log::CLI.logger('stderr')
+# Bio::Log::CLI.trace('info')
+
+options = {:example_switch=>false,:show_help=>false}
+opts = OptionParser.new do |o|
+  o.banner = "Usage: #{File.basename($0)} [options] filename\ne.g. #{File.basename($0)}"
+
+  o.on_tail('-h', '--help', 'display this help and exit') do
+    options[:show_help] = true
+  end
+end
+
+p options
+
+if options[:show_help]
+  print USAGE
+  exit 1
+end
+
+
+begin
+  opts.parse!(ARGV)
+
+  case command
+    when 'overlap'
+      print "HERE"
+  end
+
+
+rescue OptionParser::InvalidOption => e
+  options[:invalid_argument] = e.message
+end
+
