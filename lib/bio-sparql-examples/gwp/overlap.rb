@@ -8,7 +8,7 @@ module BioSparql
 
         sparql = DB.new()
 
-        query =<<QTEXT
+        result = sparql.query(<<QUERY
 
 SELECT ?species ?source ?hspecies ?hsource ?cluster ?hgene WHERE # ?cluster ?fam WHERE 
 {
@@ -26,8 +26,8 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster ?hgene WHERE # ?cluster ?fam
 
     FILTER (CONTAINS(?species,"Mi") && CONTAINS(?hspecies,"Mi") && CONTAINS(?source,"CDS") && CONTAINS(?hsource,"DNA") ) .
 }
-QTEXT
-        result = sparql.query(query)
+QUERY
+)
         result.each_solution do | res |
           p res[:cluster].to_s
         end
