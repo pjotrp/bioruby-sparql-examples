@@ -20,5 +20,10 @@ NAMESPACE
         @db.query(NS+buf) 
       end
     end
+
+    def GWP::query buf
+      db = SPARQL::Client.new(SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
+      db.query(NS+buf) 
+    end
   end
 end

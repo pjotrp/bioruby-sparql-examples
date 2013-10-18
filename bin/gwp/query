@@ -68,11 +68,7 @@ begin
       BioSparql::GWP::Overlap::query()
     when 'species'
       require 'bio-sparql-examples/gwp/db'
-      # require 'bio-sparql-examples/gwp/'+command
-      # BioSparql::GWP::Species::query()
-      sparql = BioSparql::GWP::DB.new()
-
-      result = sparql.query(<<QUERY
+      sparql = BioSparql::GWP.query(<<QUERY
 
 SELECT DISTINCT ?species ?source  WHERE 
 {
@@ -81,11 +77,8 @@ SELECT DISTINCT ?species ?source  WHERE
 }
 
 QUERY
-)
-      result.each_solution do | res |
+).each do | res |
           print res[:species],"\t",res[:source],"\n"
-      end
-
   end
 
 
