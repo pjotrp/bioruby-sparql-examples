@@ -12,6 +12,7 @@ USAGE =<<DESCRIPTION
 
 Run queries on a GWP database. Queries are
 
+  species  : Find included species and data sources
   overlap  : Find overlapping clusters
 
 DESCRIPTION
@@ -63,8 +64,11 @@ begin
 
   case command
     when 'overlap'
-      require 'bio-sparql-examples/gwp/overlap'
-      BioSparql::GWP::Overlap::query_clusters()
+      require 'bio-sparql-examples/gwp/'+command
+      BioSparql::GWP::Overlap::query()
+    when 'species'
+      require 'bio-sparql-examples/gwp/'+command
+      BioSparql::GWP::Species::query()
   end
 
 

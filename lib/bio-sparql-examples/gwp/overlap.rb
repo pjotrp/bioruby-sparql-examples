@@ -4,7 +4,7 @@ module BioSparql
   module GWP
     module Overlap
 
-      def Overlap::query_clusters
+      def Overlap::query
 
         sparql = DB.new()
 
@@ -26,6 +26,7 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster ?hgene WHERE # ?cluster ?fam
 
     FILTER (CONTAINS(?species,"Mi") && CONTAINS(?hspecies,"Mi") && CONTAINS(?source,"CDS") && CONTAINS(?hsource,"DNA") ) .
 }
+
 QUERY
 )
         result.each_solution do | res |

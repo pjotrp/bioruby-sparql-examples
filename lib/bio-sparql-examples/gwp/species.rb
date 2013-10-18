@@ -3,13 +3,12 @@ require 'bio-sparql-examples/gwp/db'
 module BioSparql
   module GWP
     module Species
-      include GWP::DB
 
       def Species::query
 
-        sparql = SPARQL::Client.new(SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
+        sparql = DB.new()
 
-        query =<<QTEXT
+        result = sparql.query(<<QUERY
 
 SELECT ?species ?source ?hspecies ?hsource ?cluster ?hgene WHERE # ?cluster ?fam WHERE 
 {
@@ -27,8 +26,9 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster ?hgene WHERE # ?cluster ?fam
 
     FILTER (CONTAINS(?species,"Mi") && CONTAINS(?hspecies,"Mi") && CONTAINS(?source,"CDS") && CONTAINS(?hsource,"DNA") ) .
 }
-QTEXT
-        result = sparql.query(NS+query)
+
+QUERY
+)
         result.each_solution do | res |
           p res[:cluster].to_s
         end
