@@ -2,11 +2,12 @@ require 'bio-sparql-examples/gwp/db'
 
 module BioSparql
   module GWP
-    module Overlap
+    module Species
+      include GWP::DB
 
-      def Overlap::query_clusters
+      def Species::query
 
-        sparql = DB.new()
+        sparql = SPARQL::Client.new(SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
 
         query =<<QTEXT
 
@@ -27,7 +28,7 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster ?hgene WHERE # ?cluster ?fam
     FILTER (CONTAINS(?species,"Mi") && CONTAINS(?hspecies,"Mi") && CONTAINS(?source,"CDS") && CONTAINS(?hsource,"DNA") ) .
 }
 QTEXT
-        result = sparql.query(query)
+        result = sparql.query(NS+query)
         result.each_solution do | res |
           p res[:cluster].to_s
         end

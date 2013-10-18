@@ -1,6 +1,6 @@
 module BioSparql
   module GWP
-    module DB
+    class DB
       SPARQL_ENDPOINT = "http://localhost:8000/sparql/?soft-limit=-1"
 
       NS =<<NAMESPACE
@@ -12,6 +12,13 @@ prefix doi: <http://dx.doi.org/>
 prefix : <http://biobeat.org/rdf/ns#> 
 NAMESPACE
 
+      def initialize
+        @db = SPARQL::Client.new(SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
+      end
+
+      def query buf
+        @db.query(NS+buf) 
+      end
     end
   end
 end
