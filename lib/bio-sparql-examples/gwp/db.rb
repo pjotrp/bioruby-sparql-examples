@@ -27,5 +27,6 @@ NAMESPACE
       db = SPARQL::Client.new(DB::SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
       db.query(DB::NS+buf) 
     end
+   
   end
 end

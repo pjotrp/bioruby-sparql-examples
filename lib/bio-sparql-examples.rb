@@ -8,5 +8,6 @@
 #
 # In this file only require other files. Avoid other source code.
 
-require 'bio-sparql-examples/sparql-examples.rb'
+require 'bio-sparql-examples/sparql-examples'
+require 'bio-sparql-examples/pretty'
 
