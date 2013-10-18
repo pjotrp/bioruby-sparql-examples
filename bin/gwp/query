@@ -67,8 +67,25 @@ begin
       require 'bio-sparql-examples/gwp/'+command
       BioSparql::GWP::Overlap::query()
     when 'species'
-      require 'bio-sparql-examples/gwp/'+command
-      BioSparql::GWP::Species::query()
+      require 'bio-sparql-examples/gwp/db'
+      # require 'bio-sparql-examples/gwp/'+command
+      # BioSparql::GWP::Species::query()
+      sparql = BioSparql::GWP::DB.new()
+
+      result = sparql.query(<<QUERY
+
+SELECT DISTINCT ?species ?source  WHERE 
+{
+      ?fam :species ?species ;
+        :source ?source .
+}
+
+QUERY
+)
+      result.each_solution do | res |
+          print res[:species],"\t",res[:source],"\n"
+      end
+
   end
 
 
