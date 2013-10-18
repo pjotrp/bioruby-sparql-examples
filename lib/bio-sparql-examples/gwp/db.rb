@@ -1,5 +1,6 @@
 module BioSparql
   module GWP
+    # DB allows multiple queries on one connection
     class DB
       SPARQL_ENDPOINT = "http://localhost:8000/sparql/?soft-limit=-1"
 
@@ -21,9 +22,10 @@ NAMESPACE
       end
     end
 
+    # Query once on a connection
     def GWP::query buf
-      db = SPARQL::Client.new(SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
-      db.query(NS+buf) 
+      db = SPARQL::Client.new(DB::SPARQL_ENDPOINT, { "soft-limit" => "-1", :method => 'get' })
+      db.query(DB::NS+buf) 
     end
   end
 end

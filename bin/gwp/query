@@ -32,6 +32,7 @@ end
 
 require 'bio-sparql-examples'
 require 'optparse'
+require 'bio-sparql-examples/gwp/db'
 
 # Uncomment when using the bio-logger 
 # require 'bio-logger'
@@ -67,20 +68,16 @@ begin
       require 'bio-sparql-examples/gwp/'+command
       BioSparql::GWP::Overlap::query()
     when 'species'
-      require 'bio-sparql-examples/gwp/db'
       sparql = BioSparql::GWP.query(<<QUERY
-
-SELECT DISTINCT ?species ?source  WHERE 
-{
-      ?fam :species ?species ;
-        :source ?source .
-}
-
+        SELECT DISTINCT ?species ?source  WHERE {
+              ?fam :species ?species ;
+                :source ?source .
+        }
 QUERY
-).each do | res |
-          print res[:species],"\t",res[:source],"\n"
-  end
-
+        ).each { | res |
+            print res[:species],"\t",res[:source],"\n"
+          }
+end
 
 rescue OptionParser::InvalidOption => e
   options[:invalid_argument] = e.message
