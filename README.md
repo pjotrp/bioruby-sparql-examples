@@ -2,15 +2,11 @@
 
 [![Build Status](https://secure.travis-ci.org/pjotrp/bioruby-sparql-examples.png)](http://travis-ci.org/pjotrp/bioruby-sparql-examples)
 
-Full description goes here
+This repository contains Ruby driven SPARQL queries - mostly one-offs
+I execute for my job. You may also want to check out bioruby-rdf and
+bioruby-table projects which both use semantic web technologies.
 
 Note: this software is under active development!
-
-## Installation
-
-```sh
-gem install bio-sparql-examples
-```
 
 ## Usage
 
