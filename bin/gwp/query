@@ -12,8 +12,9 @@ USAGE =<<DESCRIPTION
 
 Run queries on a GWP database. Queries are
 
-  species  : Find included species and data sources
-  overlap  : Find overlapping clusters
+  species        : Find included species and data sources
+  overlap        : Find overlapping clusters betweens species
+  match          : For fams count matching fams
 
 DESCRIPTION
 
@@ -33,6 +34,8 @@ end
 require 'bio-sparql-examples'
 require 'optparse'
 require 'bio-sparql-examples/gwp/db'
+
+include BioSparql
 
 # Uncomment when using the bio-logger 
 # require 'bio-logger'
@@ -77,6 +80,10 @@ QUERY
         ).each { | res |
             print res[:species],"\t",res[:source],"\n"
           }
+    when 'match'
+      require 'bio-sparql-examples/gwp/overlap'
+      BioSparql::GWP::Overlap::query :filter => "FILTER (?source = ?hsource && ?species != ?hspecies)"
+        # Should be   Mi      CDS     22
 end
 
 rescue OptionParser::InvalidOption => e

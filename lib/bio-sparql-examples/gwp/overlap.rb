@@ -4,13 +4,13 @@ module BioSparql
   module GWP
     module Overlap
 
-      def Overlap::query
+      def Overlap::query options = {:filter => "FILTER (?species!=?hspecies || ?source!=?hsource)" }
 
         sparql = DB.new()
 
         result = sparql.query(<<QUERY
 
-SELECT ?species ?source ?hspecies ?hsource ?cluster WHERE
+SELECT ?species ?source ?hspecies ?hsource ?cluster ?hcluster WHERE
 {
       ?fam :clusterid ?cluster ;
         :is_pos_sel ?is_pos ;
@@ -19,13 +19,14 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster WHERE
       ?seq a :blast_match ; 
         :cluster ?cluster ;
         :homolog_species ?hspecies ;
-        :homolog_source ?hsource ;
         rdf:label ?gene ;
-        :homolog_gene "Minc_Contig9_302" ;
+        # :homolog_gene "Minc_Contig9_302" ;
         :homolog_gene ?hgene .
-
-    FILTER (?species!=?hspecies || ?source!=?hsource) .
-    # FILTER (CONTAINS(?species,"Mi") && CONTAINS(?hspecies,"Mi") && CONTAINS(?source,"CDS") && CONTAINS(?hsource,"DNA") ) .
+      OPTIONAL { ?seq :homolog_source ?hsource } .
+      ?seq :homolog_cluster ?hcluster .
+      ?hcluster :is_pos_sel true .
+ 
+        #{options[:filter]} .
 }
 
 QUERY
@@ -35,7 +36,7 @@ QUERY
         group_clusters = {}
         result.each_solution do | res |
           id = [:species,:source,:hspecies,:hsource].map{ |id| res[id] }.join("\t")
-          puts [:species,:source,:hspecies,:hsource,:cluster].map { |id| res[id] }.join("\t")
+          puts [:species,:source,:hspecies,:hsource,:cluster,:hcluster].map { |id| res[id] }.join("\t")
           count[id] ||= 0
           count[id] += 1
           group_clusters[id] ||= {}
@@ -51,6 +52,7 @@ QUERY
           Pretty::print rec
           print total,"\t",count[id],"\n"
         end
+        # Default filter
         # Mi  CDS Mi  DNA 1762 includes all variants
       end
     end
