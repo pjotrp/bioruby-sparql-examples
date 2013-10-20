@@ -49,7 +49,7 @@ log.outputters = Bio::Log::Outputter.stderr
 Bio::Log::CLI.logger('stderr')
 Bio::Log::CLI.trace('info')
 
-options = {:show_query=>false,:show_help=>false}
+options = {:show_help=>false}
 
 opts = OptionParser.new do |o|
   o.banner = "Usage: #{File.basename($0)} [options] filename\ne.g. #{File.basename($0)}"
@@ -60,6 +60,12 @@ opts = OptionParser.new do |o|
   
   o.on("-v", "--verbose", "Run verbosely") do |v|
     Bio::Log::CLI.trace('info')
+    options[:verbose] = true
+  end
+
+  o.on("-d", "--debug", "Debug mode") do |v|
+    Bio::Log::CLI.trace('debug')
+    options[:debug] = true
   end
   
   o.on_tail('-h', '--help', 'display this help and exit') do
@@ -85,14 +91,13 @@ begin
       BioSparql::GWP::Overlap::query()
     when 'species'
       sparql = BioSparql::GWP.query(<<QUERY
-        SELECT DISTINCT ?species ?source  WHERE {
+        SELECT ?species ?source (COUNT(?cluster) as ?c)  WHERE {
               ?fam :species ?species ;
-                :source ?source .
-        }
+                :source ?source ;
+                :clusterid ?cluster .
+        } GROUP BY ?species ?source 
 QUERY
-        ).each { | res |
-            print res[:species],"\t",res[:source],"\n"
-          }
+        ).each { | rec | Pretty::println rec }
     when 'match'
       require 'bio-sparql-examples/gwp/overlap'
       args = options.merge(:filter => "FILTER (?species != ?hspecies)")

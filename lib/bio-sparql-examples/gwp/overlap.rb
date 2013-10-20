@@ -5,6 +5,7 @@ module BioSparql
     module Overlap
 
       def Overlap::query options = {:is_pos_sel => false , :filter => "FILTER (?species!=?hspecies || ?source!=?hsource)" }
+        logger = Bio::Log::LoggerPlus['bio-sparql-examples']
 
         sparql = DB.new()
 
@@ -44,7 +45,7 @@ QUERY
         group_clusters = {}
         result.each_solution do | res |
           id = [:species,:source,:hspecies,:hsource].map{ |id| res[id] }.join("\t")
-          puts [:species,:source,:hspecies,:hsource,:cluster,:hcluster].map { |id| res[id] }.join("\t")
+          logger.debug [:species,:source,:hspecies,:hsource,:cluster,:hcluster].map { |id| res[id] }.join("\t")
           count[id] ||= 0
           count[id] += 1
           group_clusters[id] ||= {}
