@@ -20,6 +20,8 @@ Run queries on a GWP database. Queries are
 Switches are
 
   --is_pos_sel   : restrict to clusters with positive selection
+  --species      : use within species db
+  --nr           : use nr db
 
 DESCRIPTION
 
@@ -47,7 +49,7 @@ require 'bio-logger'
 log = Bio::Log::LoggerPlus.new 'bio-sparql-examples'
 log.outputters = Bio::Log::Outputter.stderr 
 Bio::Log::CLI.logger('stderr')
-Bio::Log::CLI.trace('info')
+Bio::Log::CLI.trace('debug')
 
 options = {:show_help=>false}
 
@@ -56,6 +58,14 @@ opts = OptionParser.new do |o|
 
   o.on("--is_pos_sel", "Positive selections only") do |b|
     options[:is_pos_sel] = true
+  end
+  
+  o.on("--species", "Species DB") do |b|
+    options[:species] = true
+  end
+  
+  o.on("--nr", "NR DB") do |b|
+    options[:nr] = true
   end
   
   o.on("-v", "--verbose", "Run verbosely") do |v|
@@ -79,12 +89,12 @@ begin
 
   command = ARGV.shift
 
-
   if options[:show_help]
     print USAGE
     exit 1
   end
 
+  raise "Do not mix --species and --nr" if options[:species] and options[:nr]
   case command
     when 'overlap'
       require 'bio-sparql-examples/gwp/'+command

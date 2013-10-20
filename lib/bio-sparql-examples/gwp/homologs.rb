@@ -4,6 +4,7 @@ module BioSparql
   module GWP
     module Homologs
 
+      # Uses :is_pos_sel, :nr, :species
       def Homologs::query options = {:is_pos_sel => false , :filter => "FILTER (?species!=?hspecies)" }
         logger = Bio::Log::LoggerPlus['bio-sparql-examples']
 
@@ -19,9 +20,23 @@ module BioSparql
           ""
         end
 
+        homologs = if options[:species]
+                     """
+                         ?seq :homolog_cluster ?hcluster .
+                         ?seq :homolog_source ?hsource .
+                     """
+                   elsif options[:nr]
+                     """
+                         MINUS { ?seq :homolog_cluster ?hcluster } .
+                     """
+                   else
+                     ""
+                   end
+
+
         result = sparql.query(<<QUERY
 
-        SELECT ?species ?source (COUNT(?hgene) as ?c) WHERE {
+        SELECT ?species ?source ?cluster ?hgene WHERE {
               ?fam :clusterid ?cluster ;
                 :is_pos_sel ?is_pos ;
                 :species ?species ;
@@ -30,24 +45,29 @@ module BioSparql
                 :cluster ?cluster ;
                 :homolog_species ?hspecies ;
                 :homolog_gene ?hgene .
+              #{homologs}
               #{options[:filter]} .
-        } GROUP BY ?species ?source
+        } 
 QUERY
 )
         count = {}
         all = {}
         group_clusters = {}
         result.each_solution do | res |
-          id = [:species,:source,:hspecies,:hsource].map{ |id| res[id] }.join("\t")
-          logger.debug [:species,:source,:hspecies,:hsource,:cluster,:hcluster].map { |id| res[id] }.join("\t")
+          id = [:species,:source].map{ |id| res[id] }.join("\t")
+          logger.debug [:species,:source,:cluster,:hgene].map { |id| res[id] }.join("\t")
+          # Count all hits against id
           count[id] ||= 0
           count[id] += 1
+          # Count all hits with a unique cluster
           group_clusters[id] ||= {}
           cluster = res[:cluster].to_s
           group_clusters[id][cluster] ||= 0
           group_clusters[id][cluster] += 1
+          # Simplify output and store the last record
           h = res.to_hash
           h.delete(:cluster)
+          h.delete(:hgene)
           all[id] ||= h
         end
         all.each do |id,rec|
@@ -55,8 +75,6 @@ QUERY
           Pretty::print rec
           print total,"\t",count[id],"\n"
         end
-        # Default filter
-        # Mi  CDS Mi  DNA 1762 includes all variants
       end
     end
   end
