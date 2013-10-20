@@ -12,8 +12,8 @@ USAGE =<<DESCRIPTION
 
 Run queries on a GWP database. Queries are
 
-  species        : Find included species and data sources
-  homologs       : Find all clusters with homologs
+  species        : Find included species and data sources and count clusters
+  homologs       : Find all species/source/clusters with homologs
   overlap        : Find overlapping clusters betweens species
   match          : For fams count matching fams
 
@@ -98,6 +98,10 @@ begin
         } GROUP BY ?species ?source 
 QUERY
         ).each { | rec | Pretty::println rec }
+    when 'homolog'
+      require 'bio-sparql-examples/gwp/homologs'
+      args = options.merge(:filter => "FILTER (?species != ?hspecies)")
+      BioSparql::GWP::Homologs::query args
     when 'match'
       require 'bio-sparql-examples/gwp/overlap'
       args = options.merge(:filter => "FILTER (?species != ?hspecies)")
