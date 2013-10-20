@@ -4,9 +4,19 @@ module BioSparql
   module GWP
     module Overlap
 
-      def Overlap::query options = {:filter => "FILTER (?species!=?hspecies || ?source!=?hsource)" }
+      def Overlap::query options = {:is_pos_sel => false , :filter => "FILTER (?species!=?hspecies || ?source!=?hsource)" }
 
         sparql = DB.new()
+
+        is_pos_sel = if options[:is_pos_sel] 
+          """
+      OPTIONAL { ?seq :homolog_source ?hsource } .
+      ?seq :homolog_cluster ?hcluster .
+      ?hcluster :is_pos_sel true .
+          """
+        else
+          ""
+        end
 
         result = sparql.query(<<QUERY
 
@@ -22,11 +32,9 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster ?hcluster WHERE
         rdf:label ?gene ;
         # :homolog_gene "Minc_Contig9_302" ;
         :homolog_gene ?hgene .
-      OPTIONAL { ?seq :homolog_source ?hsource } .
-      ?seq :homolog_cluster ?hcluster .
-      ?hcluster :is_pos_sel true .
- 
-        #{options[:filter]} .
+
+      #{is_pos_sel}
+      #{options[:filter]} .
 }
 
 QUERY

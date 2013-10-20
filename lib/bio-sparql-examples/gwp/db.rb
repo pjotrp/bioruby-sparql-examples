@@ -18,6 +18,8 @@ NAMESPACE
       end
 
       def query buf
+        logger = Bio::Log::LoggerPlus['bio-sparql-examples']
+        buf.split(/\n/).map { |s| logger.info s }
         @db.query(NS+buf) 
       end
     end

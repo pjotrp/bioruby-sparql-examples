@@ -13,8 +13,13 @@ USAGE =<<DESCRIPTION
 Run queries on a GWP database. Queries are
 
   species        : Find included species and data sources
+  homologs       : Find all clusters with homologs
   overlap        : Find overlapping clusters betweens species
   match          : For fams count matching fams
+
+Switches are
+
+  --is_pos_sel   : restrict to clusters with positive selection
 
 DESCRIPTION
 
@@ -38,17 +43,25 @@ require 'bio-sparql-examples/gwp/db'
 include BioSparql
 
 # Uncomment when using the bio-logger 
-# require 'bio-logger'
-# log = Bio::Log::LoggerPlus.new 'bio-sparql-examples'
-# log.outputters = Bio::Log::Outputter.stderr 
-# Bio::Log::CLI.logger('stderr')
-# Bio::Log::CLI.trace('info')
+require 'bio-logger'
+log = Bio::Log::LoggerPlus.new 'bio-sparql-examples'
+log.outputters = Bio::Log::Outputter.stderr 
+Bio::Log::CLI.logger('stderr')
+Bio::Log::CLI.trace('info')
 
-options = {:example_switch=>false,:show_help=>false}
+options = {:show_query=>false,:show_help=>false}
 
 opts = OptionParser.new do |o|
   o.banner = "Usage: #{File.basename($0)} [options] filename\ne.g. #{File.basename($0)}"
 
+  o.on("--is_pos_sel", "Positive selections only") do |b|
+    options[:is_pos_sel] = true
+  end
+  
+  o.on("-v", "--verbose", "Run verbosely") do |v|
+    Bio::Log::CLI.trace('info')
+  end
+  
   o.on_tail('-h', '--help', 'display this help and exit') do
     options[:show_help] = true
   end
@@ -82,7 +95,8 @@ QUERY
           }
     when 'match'
       require 'bio-sparql-examples/gwp/overlap'
-      BioSparql::GWP::Overlap::query :filter => "FILTER (?source = ?hsource && ?species != ?hspecies)"
+      args = options.merge(:filter => "FILTER (?species != ?hspecies)")
+      BioSparql::GWP::Overlap::query args
         # Should be   Mi      CDS     22
 end
 

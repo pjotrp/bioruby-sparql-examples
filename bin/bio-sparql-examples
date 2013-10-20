@@ -76,10 +76,10 @@ begin
   opts.parse!(ARGV)
 
   # Uncomment when using the bio-logger
-  # Bio::Log::CLI.configure('bio-sparql-examples')
-  # logger = Bio::Log::LoggerPlus['bio-sparql-examples']
+  Bio::Log::CLI.configure('bio-sparql-examples')
+  logger = Bio::Log::LoggerPlus['bio-sparql-examples']
   # Log parsed options and remaining arguments in ARGV
-  # logger.info [options, ARGV]
+  logger.info [options, ARGV]
 
   # TODO: your code here
   # use options for your logic
