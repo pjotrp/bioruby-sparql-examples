@@ -101,11 +101,17 @@ begin
       require 'bio-sparql-examples/gwp/'+command
       BioSparql::GWP::Overlap::query()
     when 'species'
+      is_pos_sel = if options[:is_pos_sel]
+                     "?fam :is_pos_sel true ."
+                   else
+                     ""
+                   end
       sparql = BioSparql::GWP.query(<<QUERY
         SELECT ?species ?source (COUNT(?cluster) as ?c)  WHERE {
               ?fam :species ?species ;
                 :source ?source ;
                 :clusterid ?cluster .
+              #{is_pos_sel} 
         } GROUP BY ?species ?source 
 QUERY
         ).each { | rec | Pretty::println rec }
