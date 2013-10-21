@@ -19,7 +19,8 @@ Run queries on a GWP database. Queries are
 
 Switches are
 
-  --is_pos_sel   : restrict to clusters with positive selection
+  --all          : include all clusters
+  --is_pos_sel   : restrict to hclusters with positive selection
   --species      : use within species db
   --nr           : use nr db
 
