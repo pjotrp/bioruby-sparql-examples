@@ -12,17 +12,18 @@ USAGE =<<DESCRIPTION
 
 Run queries on a GWP database. Queries are
 
-  species        : Find included species and data sources and count clusters
-  homologs       : Find all species/source/clusters with homologs
-  overlap        : Find overlapping clusters betweens species
-  match          : For fams count matching fams
+  species           : Find included species and data sources and count clusters
+  homologs          : Find all species/source/clusters with homologs
+  overlap           : Find overlapping clusters betweens species
+  match             : For fams count matching fams
 
 Switches are
 
-  --all          : include all clusters
-  --is_pos_sel   : restrict to hclusters with positive selection
-  --species      : use within species db
-  --nr           : use nr db
+  --all             : include all clusters
+  --is_pos_sel      : restrict to hclusters with positive selection
+  --species         : use within species db
+  --nr              : use nr db
+  --combine_sources : combine all sources
 
 DESCRIPTION
 
@@ -67,6 +68,10 @@ opts = OptionParser.new do |o|
   
   o.on("--nr", "NR DB") do |b|
     options[:nr] = true
+  end
+  
+  o.on("--combine_sources", "Combine all sources (CDS, DNA, EST)") do |b|
+    options[:combine_sources] = true
   end
   
   o.on("-v", "--verbose", "Run verbosely") do |v|

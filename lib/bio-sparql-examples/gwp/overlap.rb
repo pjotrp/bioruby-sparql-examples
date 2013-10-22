@@ -4,6 +4,7 @@ module BioSparql
   module GWP
     module Overlap
 
+      # Uses :is_pos_sel, :combine_sources
       def Overlap::query options = {:is_pos_sel => false , :filter => "FILTER (?species!=?hspecies || ?source!=?hsource)" }
         logger = Bio::Log::LoggerPlus['bio-sparql-examples']
 
@@ -19,22 +20,26 @@ module BioSparql
           ""
         end
 
+        combine_sources = if options[:combine_sources]
+                            ""
+                          else
+                            "?fam :source ?source ."
+                          end
         result = sparql.query(<<QUERY
 
 SELECT ?species ?source ?hspecies ?hsource ?cluster ?hcluster WHERE
 {
       ?fam :clusterid ?cluster ;
         :is_pos_sel ?is_pos ;
-        :species ?species ;
-        :source ?source .
+        :species ?species .
+      #{is_pos_sel}
       ?seq a :blast_match ; 
         :cluster ?cluster ;
         :homolog_species ?hspecies ;
         rdf:label ?gene ;
-        # :homolog_gene "Minc_Contig9_302" ;
         :homolog_gene ?hgene .
 
-      #{is_pos_sel}
+      #{combine_sources} 
       #{options[:filter]} .
 }
 
@@ -54,6 +59,7 @@ QUERY
           group_clusters[id][cluster] += 1
           h = res.to_hash
           h.delete(:cluster)
+          h.delete(:hcluster)
           all[id] ||= h
         end
         all.each do |id,rec|
