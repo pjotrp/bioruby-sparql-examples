@@ -19,7 +19,7 @@ $biotable table1.part4 --rewrite "rowname = rowname + '-' + field[0]" > table1.p
 $biotable --merge table1.part1.1 table1.part2.1 table1.part3.1 table1.part4.1 > table1.part1.2
 $biotable --columns 0,2,4,6,7,9,10 table1.part1.2 > table1.txt
 # $biotable --format eval -e 'field.join("\t")+" \\\\"' table1.txt > table1.tex
-cat table1.txt
+# cat table1.txt
 
 cd ..
 
