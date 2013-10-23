@@ -28,30 +28,35 @@ module BioSparql
                             "?fam :source ?source ."
                           end
 
-        filter2 = "FILTER (?species = \"Mi\")"
         result = sparql.query(<<QUERY
 
-SELECT ?species ?source ?hspecies ?hsource ?gene ?hcluster ?hgene ?hpos ?hdescr WHERE
+SELECT ?species ?source ?hspecies ?hsource ?cluster ?gene ?hcluster ?hgene ?hpos ?hdescr WHERE
 {
+      # Find all clusters under pos. sel.
       ?fam :clusterid ?cluster ;
         :is_pos_sel true ;
-        :species ?species .
-      # #{is_pos_sel}
+        :species ?species ;
+        :source ?source .
+
+      # Match all gene sequences
       ?seq a :blast_match ; 
         :cluster ?cluster ;
         :homolog_species ?hspecies ;
-        rdf:label ?gene ;
+        # rdf:label ?gene ;
         # :homolog_gene "Minc_Contig9_302" ;
-        :homolog_gene ?hgene ;
-        :descr ?hdescr .
-      # OPTIONAL {?seq :homolog_cluster ?hcluster } .
-      # ?seq :homolog_cluster ?hcluster .
-      # ?hcluster :is_pos_sel true .
+        :homolog_gene ?hgene .
+      OPTIONAL { ?seq :descr ?hdescr } .
 
-      #{combine_sources} 
-      # #{options[:filter]} .
-      # #{filter2 } .
-} LIMIT 100
+      FILTER (?species = "Mi" ) . # for testing
+
+      # Optional fields
+      OPTIONAL { ?seq :homolog_cluster ?hcluster .
+                 ?hcluster :is_pos_sel ?hpos } .
+
+      # #{combine_sources} 
+      # #{is_pos_sel}
+      #{options[:filter]} .
+} 
 
 QUERY
 ).each { | rec | Pretty::println rec }
