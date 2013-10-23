@@ -34,7 +34,7 @@ module BioSparql
 SELECT ?species ?source ?hspecies ?hsource ?gene ?hcluster ?hgene ?hpos ?hdescr WHERE
 {
       ?fam :clusterid ?cluster ;
-        :is_pos_sel ?is_pos ;
+        :is_pos_sel true ;
         :species ?species .
       # #{is_pos_sel}
       ?seq a :blast_match ; 
