@@ -36,7 +36,7 @@ SELECT ?species ?source ?hspecies ?hsource ?cluster ?hcluster WHERE
       ?seq a :blast_match ; 
         :cluster ?cluster ;
         :homolog_species ?hspecies ;
-        rdf:label ?gene ;
+        # rdf:label ?gene ;
         :homolog_gene ?hgene .
 
       #{combine_sources} 
