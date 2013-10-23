@@ -16,8 +16,9 @@ Run queries on a GWP database. Queries are
   homologs          : Find all species/source/clusters with homologs
   overlap           : Find overlapping clusters betweens species
   match             : For fams count matching fams
+  genes             : List genes
 
-Switches are
+Possible switches are
 
   --all             : include all clusters
   --is_pos_sel      : restrict to hclusters with positive selection
@@ -129,6 +130,10 @@ QUERY
       args = options.merge(:filter => "FILTER (?species != ?hspecies)")
       BioSparql::GWP::Overlap::query args
         # Should be   Mi      CDS     22
+    when 'genes'
+      require 'bio-sparql-examples/gwp/genes'
+      BioSparql::GWP::Genes::query # options
+
 end
 
 rescue OptionParser::InvalidOption => e
